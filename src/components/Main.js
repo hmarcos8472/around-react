@@ -42,7 +42,7 @@ function Main(props) {
           <ul className="element__container">
             {cards.map((card) => {
               return (
-                <Card key={card._id} image={card.link} title={card.name} likecount={card.likes.length} />
+                <Card key={card._id} image={card.link} title={card.name} likecount={card.likes.length} onCardImageClick={props.onCardImageClick} />
               )
             })}
           </ul>

@@ -4,7 +4,7 @@ function Card(props) {
   return (
     <>
       <li className="element__card">
-        <div className="element__image" style={{backgroundImage:`url(${props.image})`}}>
+        <div onClick={props.onCardImageClick} className="element__image" style={{backgroundImage:`url(${props.image})`}}>
           <button className="element__trash" type="button" name="trash"></button>
         </div>
         <div className="element__caption">
