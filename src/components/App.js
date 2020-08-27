@@ -17,26 +17,6 @@ function App() {
   const [imageBackground, setImageBackground] = React.useState("")
   const [imageCaption, setImageCaption] = React.useState("")
 
-  const editFormStructure = {
-    heading: "Edit Profile",
-    inputs: {},
-    buttonText: "Save"
-  }
-  const addFormStructure = {
-    heading: "New Place",
-    inputs: {},
-    buttonText: "Submit"
-  }
-  const avatarFormStructure = {
-    heading: "Change Profile Picture",
-    inputs: {},
-    buttonText: "Save"
-  }
-  const deleteFormStructure = {
-    heading: "Are You Sure?",
-    inputs: {},
-    buttonText: "Yes"
-  }
 
   return (
     <>
