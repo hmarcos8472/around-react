@@ -14,7 +14,7 @@ function App() {
   const [isAddOpen, setIsAddOpen] = React.useState(false)
 
   const [isImageOpen, setIsImageOpen] = React.useState(false)
-  const [imageBackground, setImageBackground] = React.useState("")
+  const [image, setImage] = React.useState("")
   const [imageCaption, setImageCaption] = React.useState("")
 
 
@@ -36,10 +36,10 @@ function App() {
                setIsAddOpen(true)
                setIsOverlayOn(true)
             }}
-            onCardImageClick={(e) => {
+            onCardImageClick={(link, caption) => {
               setIsImageOpen(true)
-              setImageBackground(e.target.style.backgroundImage)
-              setImageCaption(e.target.parentNode.querySelector(".element__title").innerText)
+              setImage(link)
+              setImageCaption(caption)
               setIsOverlayOn(true)
             }}
           />
@@ -81,7 +81,7 @@ function App() {
       </PopupWithForm>
       <PopupWithForm heading="Are You Sure?" buttonText="Yes" popupType="_type_delete"
       />
-      <ImagePopup isOpen={isImageOpen} title={imageCaption} image={imageBackground} onClose={() => {
+      <ImagePopup isOpen={isImageOpen} title={imageCaption} image={image} onClose={() => {
         setIsImageOpen(false)
         setIsOverlayOn(false)
       }

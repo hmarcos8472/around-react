@@ -43,7 +43,9 @@ function Main(props) {
             {cards.map((card, i) => {
               return (
                 <Card key={i} image={card.link} title={card.name} likecount={card.likes.length}
-                onCardImageClick={props.onCardImageClick}
+                onCardImageClick={() => {
+                  props.onCardImageClick(card.link, card.name)
+                }}
                 />
               )
             })}
