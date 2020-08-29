@@ -19,7 +19,7 @@
 
 .element__heart:hover {
   opacity: 60%;
-  transition: 5s;
+  transition: 1s;
 }
 
 @media (min-width: 700px) and (max-width: 824px) {

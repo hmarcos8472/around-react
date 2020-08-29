@@ -14,7 +14,7 @@
 
 .pop-up__close_image:hover {
   opacity: 60%;
-  transition: 5s;
+  transition: 1s;
 }
 
 @media (min-width:430px) and (max-width: 500px) {

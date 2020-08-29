@@ -16,5 +16,5 @@
 
 .element__trash:hover {
   opacity: 60%;
-  transition: 5s;
+  transition: 1s;
 }
