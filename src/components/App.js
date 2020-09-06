@@ -4,6 +4,8 @@ import Main from './Main.js'
 import Footer from './Footer.js'
 import PopupWithForm from './PopupWithForm.js'
 import ImagePopup from './ImagePopup.js'
+import api from '../utils/Api.js'
+import { CurrentUserContext} from '../contexts/CurrentUserContext.js'
 
 function App() {
 
@@ -17,32 +19,42 @@ function App() {
   const [image, setImage] = React.useState("")
   const [imageCaption, setImageCaption] = React.useState("")
 
+  const [currentUser, setCurrentUser] = React.useState({avatar: "", name: "", about: ""})
+  React.useEffect(() => {
+    api.getUserInfo().then(res => {
+      setCurrentUser(res)
+    })
+  }, [setCurrentUser])
+
 
   return (
     <>
       <div className="page">
         <div className={isOverlayOn ? "overlay overlay_dark" : "overlay"}>
           <Header />
-          <Main
-            onEditAvatar={() => {
-              setIsAvatarOpen(true)
-              setIsOverlayOn(true)
-            }}
-            onEditProfile={() => {
-              setIsEditOpen(true)
-              setIsOverlayOn(true)
-            }}
-            onAddCard={() => {
-               setIsAddOpen(true)
-               setIsOverlayOn(true)
-            }}
-            onCardImageClick={(link, caption) => {
-              setIsImageOpen(true)
-              setImage(link)
-              setImageCaption(caption)
-              setIsOverlayOn(true)
-            }}
-          />
+          <CurrentUserContext.Provider value={currentUser}>
+            <Main
+              onEditAvatar={() => {
+                setIsAvatarOpen(true)
+                setIsOverlayOn(true)
+              }}
+              onEditProfile={() => {
+                setIsEditOpen(true)
+                setIsOverlayOn(true)
+              }}
+              onAddCard={() => {
+                 setIsAddOpen(true)
+                 setIsOverlayOn(true)
+              }}
+              onCardImageClick={(link, caption) => {
+                setIsImageOpen(true)
+                setImage(link)
+                setImageCaption(caption)
+                setIsOverlayOn(true)
+              }}
+            />
+          </CurrentUserContext.Provider>
+
           <Footer />
         </div>
 
