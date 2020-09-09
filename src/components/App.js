@@ -1,11 +1,15 @@
 import React from 'react';
 import Header from './Header.js'
 import Main from './Main.js'
+import Card from './Card.js'
 import Footer from './Footer.js'
 import PopupWithForm from './PopupWithForm.js'
+import EditProfilePopup from './EditProfilePopup.js'
+import EditAvatarPopup from './EditAvatarPopup.js'
+import AddPlacePopup from './AddPlacePopup.js'
 import ImagePopup from './ImagePopup.js'
 import api from '../utils/Api.js'
-import { CurrentUserContext} from '../contexts/CurrentUserContext.js'
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js'
 
 function App() {
 
@@ -26,13 +30,80 @@ function App() {
     })
   }, [setCurrentUser])
 
+  function closeAllPopups() {
+    setIsOverlayOn(false)
+    setIsAddOpen(false)
+    setIsEditOpen(false)
+    setIsImageOpen(false)
+    setIsAvatarOpen(false)
+  }
+
+  function onUpdateUser(name, about) {
+    setCurrentUser({
+      name: name,
+      about: about,
+      avatar: currentUser.avatar
+    })
+    api.setUserInfo({name:name, about: about})
+  }
+
+  function onUpdateAvatar(avatar) {
+    setCurrentUser({
+      name: currentUser.name,
+      about: currentUser.about,
+      avatar: avatar
+    })
+    api.setUserAvatar({avatar: avatar})
+  }
+
+  const [cards, setCards] = React.useState([])
+
+  React.useEffect(() => {
+    api.getInitialCards().then(res => {
+      setCards(res)
+    })
+  }, [setCards, cards])
+
+  function handleCardLike(card){
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    if (isLiked) {
+      api.removeLike(card._id).then((newCard) => {
+      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      setCards(newCards);
+    });
+    } else {
+      api.likeCard(card._id).then((newCard) => {
+      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      setCards(newCards);
+    });
+    }
+  }
+
+  function handleCardDelete(card){
+    api.removeCard(card._id).then(
+      setCards(cards)
+    )
+  }
+
+  function onCardImageClick(link, caption){
+    setIsImageOpen(true)
+    setImage(link)
+    setImageCaption(caption)
+    setIsOverlayOn(true)
+  }
+
+  function onAddPlace(newCard){
+    api.addCard(newCard)
+  }
+
 
   return (
-    <>
+    <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className={isOverlayOn ? "overlay overlay_dark" : "overlay"}>
           <Header />
-          <CurrentUserContext.Provider value={currentUser}>
+
             <Main
               onEditAvatar={() => {
                 setIsAvatarOpen(true)
@@ -52,54 +123,33 @@ function App() {
                 setImageCaption(caption)
                 setIsOverlayOn(true)
               }}
-            />
-          </CurrentUserContext.Provider>
+            >
+              {cards.map((card, i) => {
+                return (
+                  <Card key={i} card={card} image={card.link} title={card.name} likecount={card.likes.length}
+                  onCardLike={()=>{handleCardLike(card)}}
+                  onCardDelete={()=>{handleCardDelete(card)}}
+                  onCardImageClick={() => {onCardImageClick(card.link, card.name)}}
+                  />
+                )
+              })}
+            </Main>
 
           <Footer />
         </div>
+      <EditProfilePopup onUpdateUser={onUpdateUser} isEditOpen={isEditOpen} onClose={closeAllPopups} />
+      <EditAvatarPopup onUpdateAvatar={onUpdateAvatar} isAvatarOpen={isAvatarOpen} onClose={closeAllPopups} />
+      <AddPlacePopup onAddPlace={onAddPlace} isAddOpen={isAddOpen} onClose={closeAllPopups} />
 
-      <PopupWithForm heading="Edit Profile" buttonText="Save" popupType="" isOpen={isEditOpen}
-        onClose={() => {
-          setIsEditOpen(false)
-          setIsOverlayOn(false)
-        }
-      }>
-        <input id="profile-name" name="profile name" minLength="2" maxLength="40" required className="pop-up__name-input pop-up__input" type="text" placeholder="Name" />
-        <span id="profile-name-error" className="pop-up__error pop-up__error_visible"></span>
-        <input id="profile-occupation" name="profile occupation" minLength="2" maxLength="40" required className="pop-up__occupation-input pop-up__input" type="text" placeholder="Occupation" />
-        <span id="profile-occupation-error" className="pop-up__error pop-up__error_visible"></span>
-      </PopupWithForm>
+      <PopupWithForm heading="Are You Sure?" buttonText="Yes" popupType="_type_delete" />
 
-      <PopupWithForm heading="New Place" buttonText="Submit" popupType="" isOpen={isAddOpen}
-        onClose={() => {
-          setIsAddOpen(false)
-          setIsOverlayOn(false)
-        }
-      }>
-        <input id="image-title" name="image title" minLength="1" maxLength="30" required className="pop-up__title-input pop-up__input" type="text" placeholder="Title" />
-        <span id="image-title-error" className="pop-up__error pop-up__error_visible"></span>
-        <input id="image-url" name="image url" type="url" required className="pop-up__url-input pop-up__input" placeholder="Image URL" />
-        <span id="image-url-error" className="pop-up__error pop-up__error_visible"></span>
-      </PopupWithForm>
-
-      <PopupWithForm heading="Change Profile Picture" buttonText="Save" popupType="_type_avatar" isOpen={isAvatarOpen} height={300}
-        onClose={() => {
-          setIsAvatarOpen(false)
-          setIsOverlayOn(false)
-        }
-      }>
-        <input id="avatar-url" name="avatar url" type="url" required className="pop-up__url-input pop-up__avatar-input pop-up__input" placeholder="Avatar URL" />
-        <span id="avatar-url-error" className="pop-up__error pop-up__error_visible"></span>
-      </PopupWithForm>
-      <PopupWithForm heading="Are You Sure?" buttonText="Yes" popupType="_type_delete"
-      />
       <ImagePopup isOpen={isImageOpen} title={imageCaption} image={image} onClose={() => {
         setIsImageOpen(false)
         setIsOverlayOn(false)
       }
       }/>
       </div>
-    </>
+    </CurrentUserContext.Provider>
   );
 }
 

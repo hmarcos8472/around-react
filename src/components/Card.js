@@ -11,8 +11,8 @@ function Card(props) {
     <>
       <li className="element__card">
         <div onClick={props.onCardImageClick} className="element__image" style={{backgroundImage:`url(${props.image})`}}>
-          <button onClick={props.onCardDelete} className={isOwn ?"element__trash_visible" :"element__trash"} type="button" name="trash"></button>
         </div>
+        <button onClick={props.onCardDelete} className={isOwn ?"element__trash_visible" :"element__trash"} type="button" name="trash"></button>
         <div className="element__caption">
           <h2 className="element__title">{props.title}</h2>
           <button onClick={props.onCardLike} className={isLiked ?"element__heart element__heart_filled" :"element__heart element__heart_empty"} type="button" name="like">

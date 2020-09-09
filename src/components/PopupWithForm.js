@@ -7,9 +7,9 @@ function PopupWithForm(props) {
         <section className={`pop-up${props.popupType}`}>
           <button onClick={props.onClose} className="pop-up__close"></button>
           <p className={`pop-up__heading${props.popupType}`}>{props.heading}</p>
-          <form className="pop-up__form" noValidate>
+          <form onSubmit={props.handleSubmit} className="pop-up__form" noValidate>
             {props.children}
-            <button className="pop-up__save pop-up__save_disabled" type="button" name="Save" disabled>{props.buttonText}</button>
+            <button onClick={props.onClose}className="pop-up__save" type="submit" name="Save" >{props.buttonText}</button>
           </form>
         </section>
       </div>
